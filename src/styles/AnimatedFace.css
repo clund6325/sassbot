@@ -1,0 +1,105 @@
+/* .face {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+}
+
+.eye .pupil {
+    transition: transform 0.3s ease-in-out;
+}
+
+.mouth {
+    transition: d 0.3s ease-in-out;
+}
+
+@keyframes blink {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(0.1);
+    }
+}
+
+.speaking .eye .white-part {
+    animation: blink 2s infinite;
+} */
+
+.face {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background-color: #ffcc99;
+    border-radius: 50%;
+    margin: 20px auto;
+}
+
+.eye {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+    top: 30px;
+}
+
+.left-eye {
+    left: 20px;
+}
+
+.right-eye {
+    right: 20px;
+}
+
+.eyebrow {
+    position: absolute;
+    width: 20px;
+    height: 5px;
+    background-color: black;
+    top: 15px;
+}
+
+.left-eyebrow {
+    left: 15px;
+}
+
+.right-eyebrow {
+    right: 15px;
+}
+
+.mouth {
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background-color: black;
+    border-radius: 0 0 40px 40px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.speaking .mouth {
+    animation: mouthMove 0.3s infinite;
+}
+
+@keyframes mouthMove {
+    0%, 100% {
+        height: 20px;
+    }
+    50% {
+        height: 10px;
+    }
+}
+
+.speaking .eye {
+    animation: eyeBlink 2s infinite;
+}
+
+@keyframes eyeBlink {
+    0%, 100% {
+        height: 20px;
+    }
+    50% {
+        height: 10px;
+    }
+}
