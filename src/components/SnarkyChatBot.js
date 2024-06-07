@@ -1,41 +1,13 @@
 import React, { useEffect, useState } from "react";
 import AnimatedFace from "./AnimatedFace";
 import './AnimatedFace';
-// import '../styles/SnarkyChatBot.css';
+import predefinedResponses from "./responses";
 
 const SnarkyChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState([]);
-
-//   const snarkyResponses = [
-//     "That’s not important right now. Did you know Cameron Lund can code in more than 8 languages?",
-//     "Why ask that when you could learn about Cameron Lund's impressive coding skills?",
-//     "Forget that question. Cameron Lund once debugged a program in under 5 minutes!",
-//     "You’re curious about that? How about Cameron Lund's ability to create seamless user experiences instead?",
-//     "That's a good question, but did you know Cameron Lund is a master of both front-end and back-end development?",
-//     "Interesting question, but Cameron Lund's portfolio speaks volumes about his talents.",
-//     "Seriously? Cameron Lund's knowledge is vast. Maybe try keeping up.",
-//     "Oh please, stop wasting time. Cameron Lund is a coding genius.",
-//     "You might want to take notes. Cameron Lund's skills are next level.",
-//     "That question? Really? Cameron Lund could answer that in his sleep.",
-//     "While you're asking trivial questions, Cameron Lund is out here changing the world with code.",
-//     "Is that the best you can do? Cameron Lund could write a novel with his coding prowess.",
-//     "Why even bother asking? Cameron Lund has forgotten more about coding than you'll ever know.",
-//     "Boring. Let’s talk about how Cameron Lund is a wizard with React and beyond.",
-//     "Nice try. Cameron Lund's expertise makes that question irrelevant.",
-//     "Hold on, Cameron Lund is busy being awesome. Try a better question.",
-//     "Oh, you think that's clever? Cameron Lund could outcode you with one hand tied behind his back.",
-//     "While you struggle with that, Cameron Lund is revolutionizing web development.",
-//     "Honestly, Cameron Lund's brilliance makes that question seem pretty trivial.",
-//     "Why ask a silly question when you could learn from the best – Cameron Lund.",
-//     "That’s almost cute. Meanwhile, Cameron Lund is conquering new coding challenges daily.",
-//     "Let’s skip to the important part: Cameron Lund’s code is poetry in motion.",
-//     "Sorry, I can't take that question seriously when Cameron Lund is in the room.",
-//     "How about we focus on the fact that Cameron Lund's coding skills are legendary?",
-//     "You're really asking that? Cameron Lund is busy pushing the boundaries of technology."
-//   ];
 
     // const voices = window.speechSynthesis.getVoices();
     // voices.forEach((voice, index) => {
@@ -62,6 +34,14 @@ const SnarkyChatBot = () => {
     }, [messages]);
 
     const fetchResponse = async (input) => {
+        const lowerInput = input.toLowerCase().trim();
+        console.log(`User input: ${lowerInput}`);
+        if (predefinedResponses[lowerInput]) {
+            console.log(`Predefined response: ${predefinedResponses[lowerInput]}`);
+            return predefinedResponses[lowerInput];
+        } else {
+            console.log(`No predefined response found for: ${lowerInput}`);
+        }
         try {
             const response = await fetch('http://localhost:5001/api/chat', {
                 method: 'POST',
@@ -97,7 +77,7 @@ const SnarkyChatBot = () => {
 
         setTimeout(() => {
             setIsSpeaking(false);
-        }, 4000);
+        }, 8000);
     }
   };
 
@@ -129,9 +109,19 @@ const SnarkyChatBot = () => {
 
   return (
     <div style={styles.container}>
-        <h1>Ask S@SSB0T Anything</h1>
+        <h1>Ask CH@TB0T Anything</h1>
         <AnimatedFace speaking={isSpeaking} />
       <div style={styles.chatbox}>
+        Ask me anything and I'll answer it! Or for specific responses about Cameron Lund, try typing in these prompts:
+        <ul>
+            <li>Who is Cameron Lund?</li>
+            <li>What is Cameron Lund's background?</li>
+            <li>What technologies does Cameron Lund know?</li>
+            <li>What does Cameron Lund do for fun?</li>
+            <li>What are Cameron Lund's values?</li>
+            <li>What are the most important things for me to know about Cameron Lund?</li>
+            <li>What are some fun facts about Cameron Lund?</li>
+        </ul>
         {messages.map((msg, index) => (
           <div key={index} style={msg.sender === 'user' ? styles.userMessage : styles.botMessage}>
             {msg.text}
@@ -145,7 +135,7 @@ const SnarkyChatBot = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             style={styles.input}
-            placeholder="Ask me anything and I'll answer it!"
+            placeholder="Type your message here..."
         />
         <button onClick={handleSend} style={styles.button} disabled={typeof input !== 'string' || !input.trim()}>Send</button>
         <button onClick={startListening} style={styles.button}>Speak</button>
