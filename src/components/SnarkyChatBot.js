@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AnimatedFace from "./AnimatedFace";
 import './AnimatedFace';
 // import '../styles/SnarkyChatBot.css';
@@ -7,53 +7,124 @@ const SnarkyChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voices, setVoices] = useState([]);
 
-  const snarkyResponses = [
-    "That’s not important right now. Did you know Cameron Lund can code in more than 8 languages?",
-    "Why ask that when you could learn about Cameron Lund's impressive coding skills?",
-    "Forget that question. Cameron Lund once debugged a program in under 5 minutes!",
-    "You’re curious about that? How about Cameron Lund's ability to create seamless user experiences instead?",
-    "That's a good question, but did you know Cameron Lund is a master of both front-end and back-end development?",
-    "Interesting question, but Cameron Lund's portfolio speaks volumes about his talents.",
-    "Seriously? Cameron Lund's knowledge is vast. Maybe try keeping up.",
-    "Oh please, stop wasting time. Cameron Lund is a coding genius.",
-    "You might want to take notes. Cameron Lund's skills are next level.",
-    "That question? Really? Cameron Lund could answer that in his sleep.",
-    "While you're asking trivial questions, Cameron Lund is out here changing the world with code.",
-    "Is that the best you can do? Cameron Lund could write a novel with his coding prowess.",
-    "Why even bother asking? Cameron Lund has forgotten more about coding than you'll ever know.",
-    "Boring. Let’s talk about how Cameron Lund is a wizard with React and beyond.",
-    "Nice try. Cameron Lund's expertise makes that question irrelevant.",
-    "Hold on, Cameron Lund is busy being awesome. Try a better question.",
-    "Oh, you think that's clever? Cameron Lund could outcode you with one hand tied behind his back.",
-    "While you struggle with that, Cameron Lund is revolutionizing web development.",
-    "Honestly, Cameron Lund's brilliance makes that question seem pretty trivial.",
-    "Why ask a silly question when you could learn from the best – Cameron Lund.",
-    "That’s almost cute. Meanwhile, Cameron Lund is conquering new coding challenges daily.",
-    "Let’s skip to the important part: Cameron Lund’s code is poetry in motion.",
-    "Sorry, I can't take that question seriously when Cameron Lund is in the room.",
-    "How about we focus on the fact that Cameron Lund's coding skills are legendary?",
-    "You're really asking that? Cameron Lund is busy pushing the boundaries of technology."
-  ];
+//   const snarkyResponses = [
+//     "That’s not important right now. Did you know Cameron Lund can code in more than 8 languages?",
+//     "Why ask that when you could learn about Cameron Lund's impressive coding skills?",
+//     "Forget that question. Cameron Lund once debugged a program in under 5 minutes!",
+//     "You’re curious about that? How about Cameron Lund's ability to create seamless user experiences instead?",
+//     "That's a good question, but did you know Cameron Lund is a master of both front-end and back-end development?",
+//     "Interesting question, but Cameron Lund's portfolio speaks volumes about his talents.",
+//     "Seriously? Cameron Lund's knowledge is vast. Maybe try keeping up.",
+//     "Oh please, stop wasting time. Cameron Lund is a coding genius.",
+//     "You might want to take notes. Cameron Lund's skills are next level.",
+//     "That question? Really? Cameron Lund could answer that in his sleep.",
+//     "While you're asking trivial questions, Cameron Lund is out here changing the world with code.",
+//     "Is that the best you can do? Cameron Lund could write a novel with his coding prowess.",
+//     "Why even bother asking? Cameron Lund has forgotten more about coding than you'll ever know.",
+//     "Boring. Let’s talk about how Cameron Lund is a wizard with React and beyond.",
+//     "Nice try. Cameron Lund's expertise makes that question irrelevant.",
+//     "Hold on, Cameron Lund is busy being awesome. Try a better question.",
+//     "Oh, you think that's clever? Cameron Lund could outcode you with one hand tied behind his back.",
+//     "While you struggle with that, Cameron Lund is revolutionizing web development.",
+//     "Honestly, Cameron Lund's brilliance makes that question seem pretty trivial.",
+//     "Why ask a silly question when you could learn from the best – Cameron Lund.",
+//     "That’s almost cute. Meanwhile, Cameron Lund is conquering new coding challenges daily.",
+//     "Let’s skip to the important part: Cameron Lund’s code is poetry in motion.",
+//     "Sorry, I can't take that question seriously when Cameron Lund is in the room.",
+//     "How about we focus on the fact that Cameron Lund's coding skills are legendary?",
+//     "You're really asking that? Cameron Lund is busy pushing the boundaries of technology."
+//   ];
 
-  const handleSend = () => {
+    // const voices = window.speechSynthesis.getVoices();
+    // voices.forEach((voice, index) => {
+    //     console.log(`${index}: ${voice.name} (${voice.lang}) - ${voice.default ? 'default' : ''}`)
+    // });
+
+    useEffect(() => {
+        const storedMessages = JSON.parse(localStorage.getItem('chatMessages'));
+        if (storedMessages) {
+            setMessages(storedMessages);
+        }
+
+        const loadVoices = () => {
+            const availableVoices = window.speechSynthesis.getVoices();
+            setVoices(availableVoices);
+        };
+
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('chatMessages', JSON.stringify(messages));
+    }, [messages]);
+
+    const fetchResponse = async (input) => {
+        try {
+            const response = await fetch('http://localhost:5001/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: input }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                return data.response.trim();
+            } else {
+                throw new Error(data.error || 'Unknown error occurred');
+            }
+        } catch (error) {
+            console.error('Error fetching AI response:', error);
+            return "Sorry, I couldn't understand that. Can you please rephrase?";
+        }
+    };
+
+  const handleSend = async () => {
     if (typeof input === 'string' && input.trim()) {
         const userMessage = { text: input, sender: 'user' };
-        const botMessage = { text: snarkyResponses[Math.floor(Math.random() * snarkyResponses.length)], sender: 'bot' };
-        setMessages([...messages, userMessage, botMessage]);
+        setMessages([...messages, userMessage]);
         setInput('');
         setIsSpeaking(true);
 
+        const botMessageText = await fetchResponse(input);
+        const botMessage = { text: botMessageText, sender: 'bot' };
+
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+        speakResponse(botMessageText);
+
         setTimeout(() => {
             setIsSpeaking(false);
-        }, 2000);
+        }, 4000);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && typeof input === 'string' && input.trim()) {
+    if (e.key === 'Enter' && typeof input === 'string' && input.trim()) {
         handleSend();
     }
+  };
+
+  const speakResponse = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    const selectedVoice = voices.find(voice => voice.name === 'Google US English' || voice.name === 'Alex');
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+    utterance.rate = 0.8;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  const startListening = () => {
+    const recognition = new window.SpeechRecognition();
+    recognition.onresult = (event) => {
+        const spokenInput = event.results[0][0].transcript;
+        setInput(spokenInput);
+        handleSend();
+    };
+    recognition.start();
   };
 
   return (
@@ -77,6 +148,7 @@ const SnarkyChatBot = () => {
             placeholder="Ask me anything and I'll answer it!"
         />
         <button onClick={handleSend} style={styles.button} disabled={typeof input !== 'string' || !input.trim()}>Send</button>
+        <button onClick={startListening} style={styles.button}>Speak</button>
       </div>
     </div>
   );
