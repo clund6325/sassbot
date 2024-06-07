@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -9,7 +10,7 @@ const port = process.env.PORT || 5001;
 app.use(cors());
 app.use(bodyParser.json());
 
-const openaiApiKey = 'sk-proj-vcYHeGQtqn9OQYl2zIrhT3BlbkFJpb5ABZ1dkybW3wsZbGMU';
+const openaiApiKey = process.env.OPENAI_API_KEY;
 
 app.post('/api/chat', async (req, res) => {
     const { message } = req.body;
