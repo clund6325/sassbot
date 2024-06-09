@@ -43,7 +43,7 @@ const SnarkyChatBot = () => {
             console.log(`No predefined response found for: ${lowerInput}`);
         }
         try {
-            const response = await fetch('https://fathomless-retreat-36578-80bb4acc3763.herokuapp.com/', {
+            const response = await fetch('https://fathomless-retreat-36578-80bb4acc3763.herokuapp.com/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -27,7 +27,7 @@ app.post('/api/chat', async (req, res) => {
                 'Authorization': `Bearer ${openaiApiKey}`,
             },
         });
-
+        console.log('OpenAI Response:', response.data)
         res.json({response: response.data.choices[0].message.content});
     } catch (error) {
         console.error("Error Details: ", error.response ? error.response.data : error.message);
