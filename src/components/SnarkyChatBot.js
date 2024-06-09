@@ -138,7 +138,7 @@ const SnarkyChatBot = () => {
             placeholder="Type your message here..."
         />
         <button onClick={handleSend} style={styles.button} disabled={typeof input !== 'string' || !input.trim()}>Send</button>
-        {/* <button onClick={startListening} style={styles.button}>Speak</button> */}
+        <button onClick={startListening} style={styles.button}>Speak</button>
       </div>
     </div>
   );
