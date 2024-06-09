@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/sassbot/static/css/main.fd7708fa.css",
-    "main.js": "/sassbot/static/js/main.eb1329ac.js",
+    "main.js": "/sassbot/static/js/main.1c0ac917.js",
     "static/js/453.316c6a59.chunk.js": "/sassbot/static/js/453.316c6a59.chunk.js",
     "index.html": "/sassbot/index.html",
     "main.fd7708fa.css.map": "/sassbot/static/css/main.fd7708fa.css.map",
-    "main.eb1329ac.js.map": "/sassbot/static/js/main.eb1329ac.js.map",
+    "main.1c0ac917.js.map": "/sassbot/static/js/main.1c0ac917.js.map",
     "453.316c6a59.chunk.js.map": "/sassbot/static/js/453.316c6a59.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fd7708fa.css",
-    "static/js/main.eb1329ac.js"
+    "static/js/main.1c0ac917.js"
   ]
 }
